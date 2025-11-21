@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PublicDashboardController;
 
 // New Livewire Component Imports
 use App\Livewire\AccidentList;
@@ -22,9 +23,7 @@ use App\Livewire\CarCreate;
 use App\Livewire\CarShow;
 use App\Livewire\CarEdit;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [PublicDashboardController::class, 'index'])->name('welcome');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
