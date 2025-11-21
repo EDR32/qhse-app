@@ -1,8 +1,19 @@
 <x-guest-layout>
+    <div class="flex justify-center">
+        {{-- Placeholder for a more prominent logo --}}
+        <img class="h-16 w-auto" src="https://bcs-logistics.co.id/assets/images/logoo.png" alt="BCS Logistics">
+    </div>
+    <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        Selamat Datang Kembali!
+    </h2>
+    <p class="mt-2 text-center text-sm text-gray-600">
+        Masuk ke akun Anda
+    </p>
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
+    <form class="mt-8 space-y-6" method="POST" action="{{ route('login') }}">
         @csrf
 
         <!-- Email Address -->
@@ -24,22 +35,26 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
+        <!-- Remember Me & Forgot Password -->
+        <div class="flex items-center justify-between mt-4">
+            <div class="flex items-center">
+                <input id="remember_me" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" name="remember">
+                <label for="remember_me" class="ml-2 block text-sm text-gray-900">
+                    {{ __('Remember me') }}
+                </label>
+            </div>
+
+            @if (Route::has('password.request'))
+                <div class="text-sm">
+                    <a class="font-medium text-indigo-600 hover:text-indigo-500" href="{{ route('password.request') }}">
+                        {{ __('Forgot your password?') }}
+                    </a>
+                </div>
+            @endif
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
+        <div>
+            <x-primary-button class="w-full justify-center">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
