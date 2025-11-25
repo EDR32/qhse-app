@@ -39,11 +39,11 @@ class Accident extends Model
 
     public function getUserAttribute()
     {
-        // Caching sederhana agar tidak query berulang kali
-        if (!array_key_exists('user_data', $this->attributes)) {
-            $this->attributes['user_data'] = app(\App\Services\UserService::class)->findById($this->user_id);
+        // Use a different, non-conflicting key for caching.
+        if (!array_key_exists('user_relation_cache', $this->attributes)) {
+            $this->attributes['user_relation_cache'] = app(\App\Services\UserService::class)->findById($this->user_id);
         }
-        return $this->attributes['user_data'];
+        return $this->attributes['user_relation_cache'];
     }
 
     public function rca(): HasOne
