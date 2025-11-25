@@ -11,8 +11,12 @@ use App\Livewire\AccidentCreate;
 use App\Livewire\AccidentShow;
 use App\Livewire\AccidentEdit;
 use App\Livewire\ViolationList;
-use App\Livewire\ViolationCreate;
-use App\Livewire\ViolationShow;
+// use App\Livewire\ViolationCreate;
+use App\Livewire\ViolationCreateUnit;
+use App\Livewire\ViolationCreateDriver;
+// use App\Livewire\ViolationShow;
+use App\Livewire\ViolationShowUnit;
+use App\Livewire\ViolationShowDriver;
 use App\Livewire\ViolationEdit;
 use App\Livewire\RcaList;
 use App\Livewire\RcaCreate;
@@ -90,9 +94,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Violation Routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/violations', ViolationList::class)->name('violations.index');
-    Route::get('/violations/create', ViolationCreate::class)->name('violations.create');
-    Route::get('/violations/{violation}', ViolationShow::class)->name('violations.show');
+    Route::get('/violations/create/unit', ViolationCreateUnit::class)->name('violations.create.unit');
+    Route::get('/violations/create/driver', ViolationCreateDriver::class)->name('violations.create.driver');
+    Route::get('/violations/unit', ViolationShowUnit::class)->name('violations.show.unit');
+    Route::get('/violations/driver', ViolationShowDriver::class)->name('violations.show.driver');
     Route::get('/violations/{violation}/edit', ViolationEdit::class)->name('violations.edit');
+    // Route::get('/violations/create', ViolationCreate::class)->name('violations.create');
 });
 
 // RCA Routes
