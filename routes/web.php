@@ -23,6 +23,17 @@ use App\Livewire\CarCreate;
 use App\Livewire\CarShow;
 use App\Livewire\CarEdit;
 
+// Placeholder for Manajemen Risiko Livewire Components
+// use App\Livewire\ManajemenRisiko\TrainingList;
+// use App\Livewire\ManajemenRisiko\FgdList;
+// use App\Livewire\ManajemenRisiko\InspectionList;
+// use App\Livewire\ManajemenRisiko\SafetyPatrolList;
+// use App\Livewire\ManajemenRisiko\SafetyObservationTourList;
+// use App\Livewire\ManajemenRisiko\CapaList;
+// use App\Livewire\ManajemenRisiko\NearmissReportList;
+// use App\Livewire\ManajemenRisiko\AuditReportList;
+// use App\Livewire\ManajemenRisiko\ApdList;
+
 Route::get('/', [PublicDashboardController::class, 'index'])->name('welcome');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -109,6 +120,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/rca/{rca}/car/create', CarCreate::class)->name('cars.create');
     Route::get('/cars/{car}', CarShow::class)->name('cars.show');
     Route::get('/cars/{car}/edit', CarEdit::class)->name('cars.edit');
+});
+
+// Manajemen Risiko Routes
+Route::middleware(['auth', 'verified'])->prefix('manajemen-risiko')->name('manajemen-risiko.')->group(function () {
+    Route::get('/training', function() { return 'Training'; })->name('training');
+    Route::get('/fgd', function() { return 'FGD'; })->name('fgd');
+    Route::get('/inspection', function() { return 'Inspection'; })->name('inspection');
+    Route::get('/safety-patrol', function() { return 'Safety Patrol'; })->name('safety-patrol');
+    Route::get('/safety-observation-tour', function() { return 'Safety Observation Tour'; })->name('safety-observation-tour');
+    Route::get('/capa', function() { return 'CAPA'; })->name('capa');
+    Route::get('/nearmiss-report', function() { return 'Nearmiss Report'; })->name('nearmiss-report');
+    Route::get('/audit-report', function() { return 'Audit Report'; })->name('audit-report');
+    Route::get('/apd', function() { return 'APD'; })->name('apd');
 });
 
 // Document Control Management Routes
