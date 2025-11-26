@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\Accident;
-use App\Models\User;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
@@ -14,118 +13,108 @@ class AccidentEdit extends Component
 
     public Accident $accident;
 
-    public $nik;
+    // Properties to hold accident data
+    public $employee_payroll_id;
     public $employee_name;
     public $division;
+    public $employee_age_group;
     public $location;
     public $accident_date;
+    public $accident_time_range;
+    public $equipment_type;
     public $description;
     public $initial_action;
     public $consequence;
-
-    // New detailed columns
-    public $employee_age_group;
-    public $equipment_type;
-    public $accident_time_range;
     public $financial_loss;
-    public $injured_body_parts = []; // For checkboxes
-    public $accident_types = []; // For checkboxes
+    public $injured_body_parts = [];
+    public $accident_types = [];
     public $lost_work_days;
+    
+    // Analysis Fields
+    public $penyebab_dasar;
+    public $penjelasan_penyebab_dasar;
+    public $penyebab_langsung;
+    public $kondisi_tidak_aman;
+    public $kesimpulan;
+
+    // File Upload Properties
     public $photo_path; // For new file upload
     public $current_photo_path; // To display existing photo
-
-    protected $rules = [
-        'nik' => 'required|string|exists:users,nik',
-        'employee_name' => 'required|string',
-        'division' => 'required|string|max:255',
-        'location' => 'required|string|max:255',
-        'accident_date' => 'required|date',
-        'description' => 'required|string',
-        'initial_action' => 'nullable|string',
-        'consequence' => 'nullable|string',
-
-        // Validation for new detailed columns
-        'employee_age_group' => 'nullable|string|max:255',
-        'equipment_type' => 'nullable|string|max:255',
-        'accident_time_range' => 'nullable|string|max:255',
-        'financial_loss' => 'nullable|numeric|min:0',
-        'injured_body_parts' => 'nullable|array',
-        'accident_types' => 'nullable|array',
-        'lost_work_days' => 'nullable|integer|min:0',
-        'photo_path' => 'nullable|image|max:1024', // Max 1MB
-    ];
 
     public function mount(Accident $accident)
     {
         $this->accident = $accident;
-        $this->nik = User::find($accident->user_id)->nik ?? null; // Assuming user_id is the reporter
+
+        // Populate all the fields from the model
+        $this->employee_payroll_id = $accident->employee_payroll_id;
         $this->employee_name = $accident->employee_name;
         $this->division = $accident->division;
+        $this->employee_age_group = $accident->employee_age_group;
         $this->location = $accident->location;
-        $this->accident_date = $accident->accident_date->format('Y-m-d');
+        $this->accident_date = $accident->accident_date ? $accident->accident_date->format('Y-m-d') : null;
+        $this->accident_time_range = $accident->accident_time_range;
+        $this->equipment_type = $accident->equipment_type;
         $this->description = $accident->description;
         $this->initial_action = $accident->initial_action;
         $this->consequence = $accident->consequence;
-
-        // Populate new detailed columns
-        $this->employee_age_group = $accident->employee_age_group;
-        $this->equipment_type = $accident->equipment_type;
-        $this->accident_time_range = $accident->accident_time_range;
         $this->financial_loss = $accident->financial_loss;
+        $this->lost_work_days = $accident->lost_work_days;
+        $this->current_photo_path = $accident->photo_path;
+        
         $this->injured_body_parts = $accident->injured_body_parts ?? [];
         $this->accident_types = $accident->accident_types ?? [];
-        $this->lost_work_days = $accident->lost_work_days;
-        $this->current_photo_path = $accident->photo_path; // Store current photo path
+
+        // Populate analysis fields
+        $this->penyebab_dasar = $accident->penyebab_dasar;
+        $this->penjelasan_penyebab_dasar = $accident->penjelasan_penyebab_dasar;
+        $this->penyebab_langsung = $accident->penyebab_langsung;
+        $this->kondisi_tidak_aman = $accident->kondisi_tidak_aman;
+        $this->kesimpulan = $accident->kesimpulan;
     }
 
-    public function updatedNik($value)
+    protected function rules()
     {
-        $user = User::where('nik', $value)->first();
-        if ($user) {
-            $this->employee_name = $user->name;
-            $this->resetErrorBag('nik');
-        } else {
-            $this->employee_name = null;
-            $this->addError('nik', 'NIK tidak ditemukan di database.');
-        }
+        return [
+            'employee_payroll_id' => 'required|string',
+            'employee_name' => 'required|string',
+            'division' => 'required|string',
+            'location' => 'required|string|max:255',
+            'accident_date' => 'required|date',
+            'description' => 'required|string',
+            'initial_action' => 'nullable|string',
+            'consequence' => 'nullable|string',
+            'employee_age_group' => 'nullable|string|max:255',
+            'equipment_type' => 'nullable|string|max:255',
+            'accident_time_range' => 'nullable|string|max:255',
+            'financial_loss' => 'nullable|numeric|min:0',
+            'injured_body_parts' => 'nullable|array',
+            'accident_types' => 'nullable|array',
+            'lost_work_days' => 'nullable|integer|min:0',
+            'photo_path' => 'nullable|image|max:1024',
+            'penyebab_dasar' => 'nullable|string',
+            'penjelasan_penyebab_dasar' => 'nullable|string',
+            'penyebab_langsung' => 'nullable|string',
+            'kondisi_tidak_aman' => 'nullable|string',
+            'kesimpulan' => 'nullable|string',
+        ];
     }
 
     public function update()
     {
-        $this->validate();
+        $validatedData = $this->validate();
 
-        $photoPath = $this->current_photo_path; // Keep existing photo by default
         if ($this->photo_path) {
             if ($this->current_photo_path) {
-                Storage::disk('public')->delete($this->current_photo_path); // Delete old photo
+                Storage::disk('public')->delete($this->current_photo_path);
             }
-            $photoPath = $this->photo_path->store('photos', 'public');
+            $validatedData['photo_path'] = $this->photo_path->store('photos', 'public');
         }
 
-        $this->accident->update([
-            'user_id' => User::where('nik', $this->nik)->first()->id, // Update reporter ID based on NIK
-            'employee_name' => $this->employee_name,
-            'division' => $this->division,
-            'location' => $this->location,
-            'accident_date' => $this->accident_date,
-            'description' => $this->description,
-            'initial_action' => $this->initial_action,
-            'consequence' => $this->consequence,
-
-            // New detailed columns
-            'employee_age_group' => $this->employee_age_group,
-            'equipment_type' => $this->equipment_type,
-            'accident_time_range' => $this->accident_time_range,
-            'financial_loss' => $this->financial_loss,
-            'injured_body_parts' => $this->injured_body_parts,
-            'accident_types' => $this->accident_types,
-            'lost_work_days' => $this->lost_work_days,
-            'photo_path' => $photoPath,
-        ]);
+        $this->accident->update($validatedData);
 
         session()->flash('message', 'Laporan kecelakaan berhasil diperbarui.');
 
-        return redirect()->route('accidents.show', $this->accident);
+        return redirect()->route('accidents.index');
     }
 
     public function render()
@@ -133,3 +122,4 @@ class AccidentEdit extends Component
         return view('livewire.accident-edit')->layout('layouts.app');
     }
 }
+

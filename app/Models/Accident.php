@@ -13,6 +13,7 @@ class Accident extends Model
 
     protected $fillable = [
         'user_id',
+        'employee_payroll_id',
         'employee_name',
         'employee_age_group',
         'equipment_type',
@@ -28,6 +29,11 @@ class Accident extends Model
         'accident_types',
         'lost_work_days',
         'photo_path',
+        'penyebab_dasar',
+        'penjelasan_penyebab_dasar',
+        'penyebab_langsung',
+        'kondisi_tidak_aman',
+        'kesimpulan',
     ];
 
     protected $casts = [
