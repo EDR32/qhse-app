@@ -26,6 +26,7 @@ use App\Livewire\CarList;
 use App\Livewire\CarCreate;
 use App\Livewire\CarShow;
 use App\Livewire\CarEdit;
+use App\Livewire\UnitMonthlyReportPage; // <-- Use new component class name
 
 // Placeholder for Manajemen Risiko Livewire Components
 // use App\Livewire\ManajemenRisiko\TrainingList;
@@ -105,12 +106,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Violation Routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/violations', ViolationList::class)->name('violations.index');
-    Route::get('/violations/create/unit', ViolationCreateUnit::class)->name('violations.create.unit');
+    Route::get('/violations/create/unit', UnitMonthlyReportPage::class)->name('violations.create.unit'); // <-- Use new component
     Route::get('/violations/create/driver', ViolationCreateDriver::class)->name('violations.create.driver');
-    Route::get('/violations/unit', ViolationShowUnit::class)->name('violations.show.unit');
+    Route::get('/violations/unit/{unit}', ViolationShowUnit::class)->name('violations.show.unit');
     Route::get('/violations/driver', ViolationShowDriver::class)->name('violations.show.driver');
     Route::get('/violations/{violation}/edit', ViolationEdit::class)->name('violations.edit');
-    // Route::get('/violations/create', ViolationCreate::class)->name('violations.create');
+    // Route::get('/violations/create', ViolationCreate::class)->name('violations..create');
 });
 
 // RCA Routes
