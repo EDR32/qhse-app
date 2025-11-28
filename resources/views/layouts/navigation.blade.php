@@ -48,6 +48,53 @@
                         </x-dropdown>
                     </div>
 
+                    <!-- Manajemen Risiko Dropdown -->
+                    <div class="hidden sm:flex sm:items-center sm:ms-6">
+                        <x-dropdown align="left" width="w-max" contentClasses="p-4 bg-white dark:bg-qhse-neutral-dark">
+                            <x-slot name="trigger">
+                                <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-qhse-neutral-dark dark:text-qhse-neutral-light bg-qhse-neutral-light dark:bg-qhse-neutral-dark hover:text-qhse-primary dark:hover:text-qhse-secondary focus:outline-none transition ease-in-out duration-150">
+                                    <div>Manajemen Risiko</div>
+                                    <div class="ms-1">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </x-slot>
+                            <x-slot name="content">
+                                <div class="grid grid-cols-3 gap-4">
+                                    <a href="{{ route('manajemen-risiko.training') }}" class="block px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        {{ __('Training') }}
+                                    </a>
+                                    <a href="{{ route('manajemen-risiko.fgd') }}" class="block px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        {{ __('FGD') }}
+                                    </a>
+                                    <a href="{{ route('manajemen-risiko.inspection') }}" class="block px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        {{ __('Inspection') }}
+                                    </a>
+                                    <a href="{{ route('manajemen-risiko.safety-patrol') }}" class="block px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        {{ __('Safety Patrol') }}
+                                    </a>
+                                    <a href="{{ route('manajemen-risiko.safety-observation-tour') }}" class="block px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out whitespace-nowrap">
+                                        {{ __('Safety Observation Tour') }}
+                                    </a>
+                                    <a href="{{ route('manajemen-risiko.capa') }}" class="block px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        {{ __('CAPA') }}
+                                    </a>
+                                    <a href="{{ route('manajemen-risiko.nearmiss-report') }}" class="block px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        {{ __('Nearmiss Report') }}
+                                    </a>
+                                    <a href="{{ route('manajemen-risiko.audit-report') }}" class="block px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        {{ __('Audit Report') }}
+                                    </a>
+                                    <a href="{{ route('manajemen-risiko.apd') }}" class="block px-4 py-2 text-start text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        {{ __('APD') }}
+                                    </a>
+                                </div>
+                            </x-slot>
+                        </x-dropdown>
+                    </div>
+
                     {{-- @can('view all incidents')
                         <x-nav-link :href="route('incidents.index')" :active="request()->routeIs('incidents.*')">
                             Insiden
@@ -151,6 +198,42 @@
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('cars.index')">
                         {{ __('Corrective Actions (CAR)') }}
+                    </x-responsive-nav-link>
+                </div>
+            </div>
+
+            <!-- Responsive Manajemen Risiko Links -->
+            <div class="pt-4 pb-1 border-t border-gray-200">
+                <div class="px-4">
+                    <div class="font-medium text-base text-gray-800">Manajemen Risiko</div>
+                </div>
+                <div class="mt-3 space-y-1">
+                    <x-responsive-nav-link :href="route('manajemen-risiko.training')">
+                        {{ __('Training') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('manajemen-risiko.fgd')">
+                        {{ __('FGD (Forum Group Discussion)') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('manajemen-risiko.inspection')">
+                        {{ __('Inspection') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('manajemen-risiko.safety-patrol')">
+                        {{ __('Safety Patrol') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('manajemen-risiko.safety-observation-tour')">
+                        {{ __('Safety Observation Tour') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('manajemen-risiko.capa')">
+                        {{ __('CAPA') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('manajemen-risiko.nearmiss-report')">
+                        {{ __('Nearmiss Report') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('manajemen-risiko.audit-report')">
+                        {{ __('Audit Report') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('manajemen-risiko.apd')">
+                        {{ __('APD') }}
                     </x-responsive-nav-link>
                 </div>
             </div>
