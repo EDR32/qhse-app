@@ -57,9 +57,9 @@
                                 id="storing"
                                 name="storing"
                                 rows="3"
-                                class="block mt-1 w-full border-gray-300 dark:border-gray-700 
-                                       dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 
-                                       dark:focus:border-indigo-600 focus:ring-indigo-500 
+                                class="block mt-1 w-full border-gray-300 dark:border-gray-700
+                                       dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500
+                                       dark:focus:border-indigo-600 focus:ring-indigo-500
                                        dark:focus:ring-indigo-600 rounded-md shadow-sm"
                                 placeholder="Catatan storing atau kerusakan unit"
                             ></textarea>
@@ -72,9 +72,9 @@
                                 id="accident"
                                 name="accident"
                                 rows="3"
-                                class="block mt-1 w-full border-gray-300 dark:border-gray-700 
-                                       dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 
-                                       dark:focus:border-indigo-600 focus:ring-indigo-500 
+                                class="block mt-1 w-full border-gray-300 dark:border-gray-700
+                                       dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500
+                                       dark:focus:border-indigo-600 focus:ring-indigo-500
                                        dark:focus:ring-indigo-600 rounded-md shadow-sm"
                                 placeholder="Riwayat kecelakaan (jika ada)"
                             ></textarea>
@@ -85,9 +85,9 @@
                     <!-- ACTION BUTTONS -->
                     <div class="flex items-center justify-end mt-6">
                         <a href="#"
-                           class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 
-                                  dark:hover:text-white rounded-md focus:outline-none 
-                                  focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 
+                           class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900
+                                  dark:hover:text-white rounded-md focus:outline-none
+                                  focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
                                   dark:focus:ring-offset-gray-800">
                             {{ __('Batal') }}
                         </a>

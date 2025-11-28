@@ -94,27 +94,40 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <h2 class="text-lg font-semibold mb-4">Data Unit</h2>
 
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead class="bg-gray-50 dark:bg-gray-700">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium">No</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium">No Unit</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium">Jenis Unit</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{-- Data Unit masuk dari Livewire --}}
-                            <tr>
-                                <td class="border border-gray-200 dark:border-gray-700 px-6 py-3 text-left text-xs font-medium">1</td>
-                                <td class="border border-gray-200 dark:border-gray-700 px-6 py-3 text-left text-xs font-medium">2</td>
-                                <td class="border border-gray-200 dark:border-gray-700 px-6 py-3 text-left text-xs font-medium">3</td>
-                                <td class="border border-gray-200 dark:border-gray-700 px-6 py-3 text-left text-xs font-medium">
-                                    <a href="{{ url('violations/unit') }}" class="text-blue-600 hover:underline">Lihat</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-700">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium">No</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium">No Unit</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium">Jenis Unit</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                @forelse($units as $index => $unit)
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $units->firstItem() + $index }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $unit->no_unit }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $unit->jenis_unit }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="{{ route('violations.show.unit', $unit) }}" class="text-blue-600 hover:underline">Lihat</a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                            Tidak ada data unit.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-4">
+                        {{ $units->links() }}
+                    </div>
                 </div>
             </div>
 
