@@ -43,7 +43,7 @@
 
     <div class="relative min-h-screen flex flex-col">
         <!-- Navigation -->
-        <header class="bg-white dark:bg-gray-800 shadow-md">
+        <header class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <!-- Logo -->
