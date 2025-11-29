@@ -100,9 +100,27 @@
                                 </div>
 
                                 <div>
-                                    <x-input-label for="equipment_type" :value="__('Jenis Alat / Unit')" />
-                                    <x-text-input wire:model="equipment_type" id="equipment_type" class="block mt-1 w-full" type="text" name="equipment_type" />
-                                    @error('equipment_type') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                    <x-input-label for="unit_search" :value="__('No. Unit (Opsional)')" />
+                                    @if($unitSelected)
+                                        <div class="flex items-center justify-between mt-1">
+                                            <span class="block w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-md shadow-sm">{{ $selectedUnitName }}</span>
+                                            <button type="button" wire:click="changeUnit" class="ms-2 text-sm text-indigo-600 dark:text-indigo-400 hover:underline">Ganti</button>
+                                        </div>
+                                    @else
+                                        <div class="relative">
+                                            <x-text-input wire:model.live.debounce.300ms="unit_search" id="unit_search" class="block mt-1 w-full" type="text" name="unit_search" autocomplete="off" placeholder="Ketik nomor unit..." />
+                                            @if(!empty($unitSearchResults))
+                                                <div class="absolute z-10 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg mt-1 max-h-60 overflow-y-auto">
+                                                    @foreach($unitSearchResults as $unit)
+                                                        <div wire:key="unit-{{ $unit->id }}" wire:click="selectUnit({{ $unit->id }})" class="p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600">
+                                                            {{ $unit->no_unit }}
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
+                                    @error('m_unit_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
 
                                 <div class="md:col-span-2">

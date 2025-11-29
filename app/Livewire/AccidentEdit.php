@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use App\Models\Accident;
+use App\Models\Master\Unit;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
@@ -21,7 +23,6 @@ class AccidentEdit extends Component
     public $location;
     public $accident_date;
     public $accident_time_range;
-    public $equipment_type;
     public $description;
     public $initial_action;
     public $consequence;
@@ -41,6 +42,14 @@ class AccidentEdit extends Component
     public $photo_path; // For new file upload
     public $current_photo_path; // To display existing photo
 
+    // Properties for Unit Search
+    public $m_unit_id;
+    public $unit_search = '';
+    public $unitSearchResults = [];
+    public $unitSelected = false;
+    public $selectedUnitName = '';
+
+
     public function mount(Accident $accident)
     {
         $this->accident = $accident;
@@ -53,7 +62,6 @@ class AccidentEdit extends Component
         $this->location = $accident->location;
         $this->accident_date = $accident->accident_date ? $accident->accident_date->format('Y-m-d') : null;
         $this->accident_time_range = $accident->accident_time_range;
-        $this->equipment_type = $accident->equipment_type;
         $this->description = $accident->description;
         $this->initial_action = $accident->initial_action;
         $this->consequence = $accident->consequence;
@@ -70,6 +78,49 @@ class AccidentEdit extends Component
         $this->penyebab_langsung = $accident->penyebab_langsung;
         $this->kondisi_tidak_aman = $accident->kondisi_tidak_aman;
         $this->kesimpulan = $accident->kesimpulan;
+
+        // Populate unit fields if a unit is associated
+        if ($accident->m_unit_id && $accident->unit) {
+            $this->m_unit_id = $accident->m_unit_id;
+            $this->selectedUnitName = $accident->unit->no_unit;
+            $this->unit_search = $accident->unit->no_unit;
+            $this->unitSelected = true;
+        }
+    }
+
+    public function updatedUnitSearch()
+    {
+        Log::info('Searching for unit: ' . $this->unit_search);
+        if (strlen($this->unit_search) >= 2) {
+            $searchTerm = trim($this->unit_search);
+            $this->unitSearchResults = Unit::whereRaw('TRIM(no_unit) ILIKE ?', ['%' . $searchTerm . '%'])
+                ->take(5)
+                ->get();
+            Log::info('Found ' . $this->unitSearchResults->count() . ' units.');
+        } else {
+            $this->unitSearchResults = [];
+        }
+    }
+
+    public function selectUnit($unitId)
+    {
+        $unit = Unit::find($unitId);
+        if ($unit) {
+            $this->m_unit_id = $unit->id;
+            $this->selectedUnitName = $unit->no_unit;
+            $this->unit_search = $unit->no_unit;
+            $this->unitSelected = true;
+            $this->unitSearchResults = [];
+        }
+    }
+
+    public function changeUnit()
+    {
+        $this->m_unit_id = null;
+        $this->selectedUnitName = '';
+        $this->unit_search = '';
+        $this->unitSelected = false;
+        $this->unitSearchResults = [];
     }
 
     protected function rules()
@@ -84,7 +135,7 @@ class AccidentEdit extends Component
             'initial_action' => 'nullable|string',
             'consequence' => 'nullable|string',
             'employee_age_group' => 'nullable|string|max:255',
-            'equipment_type' => 'nullable|string|max:255',
+            'm_unit_id' => 'nullable|integer|exists:pgsql_master.m_unit,id',
             'accident_time_range' => 'nullable|string|max:255',
             'financial_loss' => 'nullable|numeric|min:0',
             'injured_body_parts' => 'nullable|array',
@@ -102,6 +153,9 @@ class AccidentEdit extends Component
     public function update()
     {
         $validatedData = $this->validate();
+
+        // Manually add m_unit_id to the data to be saved, as it's not part of the standard form validation array by default
+        $validatedData['m_unit_id'] = $this->m_unit_id;
 
         if ($this->photo_path) {
             if ($this->current_photo_path) {
@@ -122,4 +176,3 @@ class AccidentEdit extends Component
         return view('livewire.accident-edit')->layout('layouts.app');
     }
 }
-

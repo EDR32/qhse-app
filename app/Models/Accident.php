@@ -16,7 +16,7 @@ class Accident extends Model
         'employee_payroll_id',
         'employee_name',
         'employee_age_group',
-        'equipment_type',
+        'm_unit_id',
         'location',
         'accident_date',
         'accident_time_range',
@@ -55,5 +55,10 @@ class Accident extends Model
     public function rca(): HasOne
     {
         return $this->hasOne(RootCauseAnalysis::class);
+    }
+
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Master\Unit::class, 'm_unit_id');
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Accident;
-use App\Models\User;
+use App\Models\Master\Unit;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -34,7 +34,7 @@ class AccidentCreate extends Component
 
     // New detailed columns
     public $employee_age_group;
-    public $equipment_type;
+    public $m_unit_id;
     public $accident_time_range;
         public $financial_loss;
         public $injured_body_parts = []; // For checkboxes
@@ -67,6 +67,12 @@ class AccidentCreate extends Component
 
     public $userSearchResults = [];
     public $userSelected = false;
+
+    // Properties for Unit Search
+    public $unit_search = '';
+    public $unitSearchResults = [];
+    public $unitSelected = false;
+    public $selectedUnitName = '';
 
     // Using a lifecycle hook to search users when employee_name is updated.
     public function updatedEmployeeName(UserService $userService)
@@ -127,6 +133,42 @@ class AccidentCreate extends Component
         $this->employee_name = '';
         $this->division = '';
         $this->employee_age_group = '';
+        $this->changeUnit(); // Also reset unit
+    }
+
+    public function updatedUnitSearch()
+    {
+        Log::info('Searching for unit: ' . $this->unit_search);
+        if (strlen($this->unit_search) >= 2) {
+            $searchTerm = trim($this->unit_search); // Trim user input
+            $this->unitSearchResults = Unit::whereRaw('TRIM(no_unit) ILIKE ?', ['%' . $searchTerm . '%'])
+                ->take(5)
+                ->get();
+            Log::info('Found ' . $this->unitSearchResults->count() . ' units.');
+        } else {
+            $this->unitSearchResults = [];
+        }
+    }
+
+    public function selectUnit($unitId)
+    {
+        $unit = Unit::find($unitId);
+        if ($unit) {
+            $this->m_unit_id = $unit->id;
+            $this->selectedUnitName = $unit->no_unit;
+            $this->unit_search = $unit->no_unit;
+            $this->unitSelected = true;
+            $this->unitSearchResults = [];
+        }
+    }
+
+    public function changeUnit()
+    {
+        $this->m_unit_id = null;
+        $this->selectedUnitName = '';
+        $this->unit_search = '';
+        $this->unitSelected = false;
+        $this->unitSearchResults = [];
     }
 
     protected $rules = [
@@ -141,7 +183,7 @@ class AccidentCreate extends Component
 
         // Validation for new detailed columns
         'employee_age_group' => 'nullable|string|max:255',
-        'equipment_type' => 'nullable|string|max:255',
+        'm_unit_id' => 'nullable|integer|exists:pgsql_master.m_unit,id',
         'accident_time_range' => 'nullable|string|max:255',
         'financial_loss' => 'nullable|numeric|min:0',
         'injured_body_parts' => 'nullable|array',
@@ -179,7 +221,7 @@ class AccidentCreate extends Component
 
             // New detailed columns
             'employee_age_group' => $this->employee_age_group,
-            'equipment_type' => $this->equipment_type,
+            'm_unit_id' => $this->m_unit_id,
             'accident_time_range' => $this->accident_time_range,
             'financial_loss' => $this->financial_loss,
             'injured_body_parts' => $this->injured_body_parts,
@@ -190,8 +232,8 @@ class AccidentCreate extends Component
             // Analysis fields
             'penyebab_dasar' => $this->penyebab_dasar,
             'penjelasan_penyebab_dasar' => $this->penjelasan_penyebab_dasar,
-            'penyebab_langsung' => $this->penyebab_langsung,
-            'kondisi_tidak_aman' => $this->kondisi_tidak_aman,
+            'penyebab_langsung' => 'penyebab_langsung',
+            'kondisi_tidak_aman' => 'kondisi_tidak_aman',
             'kesimpulan' => $this->kesimpulan,
         ]);
 

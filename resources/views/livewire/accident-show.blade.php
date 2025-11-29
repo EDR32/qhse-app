@@ -34,6 +34,37 @@
                                 <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{{ $accident->consequence ?: '-' }}</p>
                             </div>
 
+                            {{-- Initial Analysis Section --}}
+                            @if ($accident->penyebab_dasar || $accident->penjelasan_penyebab_dasar || $accident->penyebab_langsung || $accident->kondisi_tidak_aman || $accident->kesimpulan)
+                            <div class="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border dark:border-gray-700">
+                                <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">Hasil Analisis Awal</h3>
+                                <div class="space-y-3 text-sm">
+                                    <div>
+                                        <p class="font-semibold text-gray-600 dark:text-gray-400">Penyebab Dasar:</p>
+                                        <p class="text-gray-800 dark:text-gray-200">{{ $accident->penyebab_dasar ?: '-' }}</p>
+                                    </div>
+                                    @if($accident->penjelasan_penyebab_dasar)
+                                    <div>
+                                        <p class="font-semibold text-gray-600 dark:text-gray-400">Penjelasan Penyebab Dasar:</p>
+                                        <p class="text-gray-800 dark:text-gray-200">{{ $accident->penjelasan_penyebab_dasar }}</p>
+                                    </div>
+                                    @endif
+                                    <div>
+                                        <p class="font-semibold text-gray-600 dark:text-gray-400">Penyebab Langsung:</p>
+                                        <p class="text-gray-800 dark:text-gray-200">{{ $accident->penyebab_langsung ?: '-' }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-gray-600 dark:text-gray-400">Kondisi Tidak Aman:</p>
+                                        <p class="text-gray-800 dark:text-gray-200">{{ $accident->kondisi_tidak_aman ?: '-' }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-gray-600 dark:text-gray-400">Kesimpulan:</p>
+                                        <p class="text-gray-800 dark:text-gray-200">{{ $accident->kesimpulan ?: '-' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+
                             @if($accident->photo_path)
                                 <div>
                                     <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">Foto Kejadian</h3>
@@ -53,7 +84,7 @@
                                     <div class="flex justify-between"><dt class="text-gray-500">Kelompok Usia:</dt><dd>{{ $accident->employee_age_group ?: '-' }}</dd></div>
                                     <div class="flex justify-between"><dt class="text-gray-500">Divisi:</dt><dd>{{ $accident->division }}</dd></div>
                                     <div class="flex justify-between"><dt class="text-gray-500">Lokasi:</dt><dd>{{ $accident->location }}</dd></div>
-                                    <div class="flex justify-between"><dt class="text-gray-500">Jenis Alat:</dt><dd>{{ $accident->equipment_type ?: '-' }}</dd></div>
+                                    <div class="flex justify-between"><dt class="text-gray-500">No. Unit:</dt><dd>{{ $accident->unit ? $accident->unit->no_unit : '-' }}</dd></div>
                                     <div class="flex justify-between"><dt class="text-gray-500">Kerugian (Rp):</dt><dd>{{ number_format($accident->financial_loss, 2, ',', '.') ?: '-' }}</dd></div>
                                     <div class="flex justify-between"><dt class="text-gray-500">Hari Kerja Hilang:</dt><dd>{{ $accident->lost_work_days ?: '-' }}</dd></div>
                                     <div class="flex justify-between"><dt class="text-gray-500">Pelapor:</dt><dd>{{ $accident->user->name }}</dd></div>
