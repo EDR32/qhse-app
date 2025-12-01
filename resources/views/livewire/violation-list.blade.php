@@ -33,9 +33,9 @@
                         transport: '{{ route('violations.create.unit', ['type' => 'transport']) }}',
                     },
                     driver: {
-                        dumptruck: '{{ route('violations.create.driver', ['type' => 'dumptruck']) }}',
-                        trailer: '{{ route('violations.create.driver', ['type' => 'trailer']) }}',
-                        project: '{{ route('violations.create.driver', ['type' => 'project']) }}',
+                        dumptruck: '{{ route('violations.create.driver', ['driver_type' => 'dumptruck']) }}',
+                        trailer: '{{ route('violations.create.driver', ['driver_type' => 'trailer']) }}',
+                        project: '{{ route('violations.create.driver', ['driver_type' => 'project']) }}',
                     }
                 }
             }" 

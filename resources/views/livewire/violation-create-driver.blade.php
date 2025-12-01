@@ -1,103 +1,108 @@
-{{-- resources/views/violations/create/violation-create-driver.blade.php --}}
-
+<div>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Tambah Data Pelanggaran Driver') }}
         </h2>
     </x-slot>
 
-    @php
-        $type = request('type'); // dumptruck | trailer | project
-    @endphp
-
     <div class="py-12">
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-
-                    {{-- Info tipe driver --}}
-                    <div class="mb-6">
-                        <span class="px-4 py-2 rounded bg-blue-100 text-blue-700 text-sm">
-                            Tipe Driver: <strong class="uppercase">{{ $type }}</strong>
-                        </span>
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            {{-- Driver Selection Card --}}
+            <div class="p-4 sm:p-8 bg-white dark:bg-qhse-neutral-dark shadow sm:rounded-lg">
+                <div class="max-w-xl">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('Pilih Driver') }}</h3>
+                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                        Anda sedang menambah pelanggaran untuk kategori: <span class="font-semibold">{{ $displayDriverType }}</span>
+                    </p>
+                    
+                    <div class="mt-4">
+                        <x-input-label for="driver_search" value="Nama / Payroll ID Driver" />
+                        @if ($selectedKaryawanName)
+                            <div class="mt-2 flex items-center justify-between p-3 bg-gray-100 dark:bg-qhse-neutral-light rounded-md border border-gray-300 dark:border-gray-600">
+                                <span class="text-gray-800 dark:text-white font-semibold">{{ $selectedKaryawanName }}</span>
+                                <button type="button" wire:click="changeKaryawan" class="text-sm text-red-500 hover:text-red-700 font-semibold">Ganti</button>
+                            </div>
+                        @else
+                            <div class="relative mt-1">
+                                <x-text-input type="text"
+                                    wire:model.live.debounce.300ms="driver_search"
+                                    class="block w-full"
+                                    placeholder="Ketik nama atau payroll ID (min. 2 huruf)..." />
+                                
+                                @if(count($searchResults) > 0)
+                                    <div class="absolute z-10 w-full mt-1 bg-white dark:bg-qhse-neutral-light rounded-md shadow-lg">
+                                        <ul class="max-h-60 overflow-auto rounded-md py-1 text-base leading-6 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                            @foreach($searchResults as $result)
+                                                <li wire:click="selectKaryawan({{ $result->id }})" class="cursor-pointer select-none relative py-2 pl-3 pr-9 text-gray-900 dark:text-white hover:bg-qhse-secondary hover:dark:bg-qhse-secondary-dark">
+                                                    <span class="font-normal block truncate">{{ $result->nama_karyawan }} ({{ $result->payroll_id }})</span>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
+                        <x-input-error :messages="$errors->get('karyawan_id')" class="mt-2" />
+                        <x-input-error :messages="$errors->get('driver_type')" class="mt-2" />
+                        <x-input-error :messages="$errors->get('driver_search')" class="mt-2" />
                     </div>
+                </div>
+            </div>
+            
+            {{-- Violation Details Section (Visible only after driver is selected) --}}
+            @if($karyawan_id)
+            <div class="p-4 sm:p-8 bg-white dark:bg-qhse-neutral-dark shadow sm:rounded-lg">
+                <form wire:submit.prevent="save">
+                    <div class="max-w-full">
+                        <h3 class="text-base font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-300 dark:border-gray-600 pb-2">
+                            Isi Detail Pelanggaran
+                        </h3>
 
-                    <form>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                            {{-- PAYROLL ID --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            {{-- Tanggal Pelanggaran --}}
                             <div>
-                                <x-input-label value="Payroll ID" />
-                                <x-text-input type="text" class="block mt-1 w-full" />
+                                <x-input-label for="violation_date" value="Tanggal Pelanggaran" />
+                                <x-text-input type="date" wire:model="violation_date" id="violation_date" class="block mt-1 w-full" />
+                                <x-input-error :messages="$errors->get('violation_date')" class="mt-2" />
                             </div>
 
-                            {{-- Nama --}}
+                            {{-- Lokasi --}}
                             <div>
-                                <x-input-label value="{{ $type == 'trailer' ? 'Nama' : 'Nama Driver' }}" />
-                                <x-text-input type="text" class="block mt-1 w-full" />
+                                <x-input-label for="location" value="Lokasi Kejadian" />
+                                <x-text-input type="text" wire:model="location" id="location" class="block mt-1 w-full" />
+                                <x-input-error :messages="$errors->get('location')" class="mt-2" />
                             </div>
 
-                            {{-- ===========================
-                                DUMPTRUCK FIELDS
-                            ============================ --}}
-                            @if ($type == 'dumptruck')
+                            {{-- Kategori Pelanggaran --}}
+                            <div class="col-span-2">
+                                <x-input-label for="violation_category" value="Kategori Pelanggaran" />
+                                <select wire:model="violation_category" id="violation_category" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-qhse-primary dark:focus:border-qhse-secondary focus:ring-qhse-primary dark:focus:ring-qhse-secondary rounded-md shadow-sm">
+                                    <option value="">-- Pilih Kategori --</option>
+                                    @foreach($violationCategories as $category)
+                                        <option value="{{ $category }}">{{ $category }}</option>
+                                    @endforeach
+                                </select>
+                                <x-input-error :messages="$errors->get('violation_category')" class="mt-2" />
+                            </div>
 
-                                <x-input-block label="Safety Training" />
-                                <x-input-block label="Tidak Lanjut MCU" />
-                                <x-input-block label="FGD (Forum Group Discussion)" />
-                                <x-input-block label="Fatigue" />
-                                <x-input-block label="Distraction" />
-                                <x-input-block label="Field of View" />
-                                <x-input-block label="Rest Area Policy" />
-                                <x-input-block label="Pelanggaran Jam Larangan" />
-                                <x-input-block label="Accident" />
-                                <x-input-block label="Violation" />
+                            {{-- Deskripsi --}}
+                            <div class="col-span-2">
+                                <x-input-label for="description" value="Deskripsi Pelanggaran" />
+                                <textarea wire:model="description" id="description" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-qhse-primary dark:focus:border-qhse-secondary focus:ring-qhse-primary dark:focus:ring-qhse-secondary rounded-md shadow-sm" rows="4"></textarea>
+                                <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                            </div>
 
-                            @endif
-
-                            {{-- ===========================
-                                TRAILER FIELDS
-                            ============================ --}}
-                            @if ($type == 'trailer')
-
-                                <x-input-block label="Safety Talk" />
-                                <x-input-block label="Tidak Lanjut MCU" />
-                                <x-input-block label="FGD (Forum Group Discussion)" />
-                                <x-input-block label="Driving Hours" />
-                                <x-input-block label="Fatigue" />
-                                <x-input-block label="Distraction" />
-                                <x-input-block label="Violation" />
-                                <x-input-block label="Rest Area Policy" />
-                                <x-input-block label="Insiden" />
-                                <x-input-block label="Overspeed" />
-                                <x-input-block label="Continue Driving" />
-                                <x-input-block label="Cell Phone Use" />
-                                <x-input-block label="Field of View" />
-                                <x-input-block label="In-Cab Assessment" />
-                                <x-input-block label="Total Driving" />
-
-                            @endif
-
-                            {{-- ===========================
-                                PROJECT FIELDS
-                            ============================ --}}
-                            @if ($type == 'project')
-
-                                <x-input-block label="Safety Talk" />
-                                <x-input-block label="Tidak Lanjut MCU" />
-                                <x-input-block label="Rest Area Policy" />
-                                <x-input-block label="Pelanggaran Jam Larangan" />
-                                <x-input-block label="Accident" />
-                                <x-input-block label="Violation" />
-
-                            @endif
-
+                            {{-- Sanksi --}}
+                            <div class="col-span-2">
+                                <x-input-label for="sanction" value="Sanksi yang Diberikan (Opsional)" />
+                                <textarea wire:model="sanction" id="sanction" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-qhse-primary dark:focus:border-qhse-secondary focus:ring-qhse-primary dark:focus:ring-qhse-secondary rounded-md shadow-sm" rows="2"></textarea>
+                                <x-input-error :messages="$errors->get('sanction')" class="mt-2" />
+                            </div>
                         </div>
 
                         {{-- Tombol --}}
-                        <div class="flex items-center justify-end space-x-3 mt-8">
-                            <a href="{{ url()->previous() }}"
+                        <div class="flex items-center justify-end space-x-3 mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                            <a href="{{ route('violations.index') }}" wire:navigate
                                 class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 
                                     bg-gray-100 dark:bg-gray-700 
                                     rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 
@@ -109,10 +114,10 @@
                                 Simpan
                             </x-primary-button>
                         </div>
-
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
+            @endif
         </div>
     </div>
-
+</div>
