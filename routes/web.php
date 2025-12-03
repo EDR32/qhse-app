@@ -27,6 +27,9 @@ use App\Livewire\CarCreate;
 use App\Livewire\CarShow;
 use App\Livewire\CarEdit;
 use App\Livewire\UnitMonthlyReportPage; // <-- Use new component class name
+use App\Livewire\Master\UnitPage;
+use App\Livewire\Master\DriverPage;
+use App\Livewire\UserManagementPage;
 
 // Placeholder for Manajemen Risiko Livewire Components
 // use App\Livewire\ManajemenRisiko\TrainingList;
@@ -109,7 +112,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/violations/create/unit', UnitMonthlyReportPage::class)->name('violations.create.unit'); // <-- Use new component
     Route::get('/violations/create/driver', ViolationCreateDriver::class)->name('violations.create.driver');
     Route::get('/violations/unit/{unit}', ViolationShowUnit::class)->name('violations.show.unit');
-    Route::get('/violations/driver', ViolationShowDriver::class)->name('violations.show.driver');
+    Route::get('/violations/driver/{driver}', ViolationShowDriver::class)->name('violations.show.driver');
     Route::get('/violations/{violation}/edit', ViolationEdit::class)->name('violations.edit');
     // Route::get('/violations/create', ViolationCreate::class)->name('violations..create');
 });
@@ -143,6 +146,12 @@ Route::middleware(['auth', 'verified'])->prefix('manajemen-risiko')->name('manaj
     Route::get('/apd', function() { return 'APD'; })->name('apd');
 });
 
+// Master Data Routes
+Route::middleware(['auth', 'verified', 'can:manage-master-data'])->prefix('master')->name('master.')->group(function () {
+    Route::get('/units', UnitPage::class)->name('units.index');
+    Route::get('/drivers', DriverPage::class)->name('drivers.index');
+});
+
 // Document Control Management Routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/documents', App\Livewire\DocumentList::class)
@@ -163,6 +172,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/users', UserManagementPage::class)->name('users.index')->middleware('can:manage users');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
