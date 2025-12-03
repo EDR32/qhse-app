@@ -33,8 +33,10 @@
                                     <div class="absolute z-10 w-full mt-1 bg-white dark:bg-qhse-neutral-light rounded-md shadow-lg">
                                         <ul class="max-h-60 overflow-auto rounded-md py-1 text-base leading-6 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                             @foreach($searchResults as $result)
-                                                <li wire:click="selectKaryawan({{ $result->id }})" class="cursor-pointer select-none relative py-2 pl-3 pr-9 text-gray-900 dark:text-white hover:bg-qhse-secondary hover:dark:bg-qhse-secondary-dark">
-                                                    <span class="font-normal block truncate">{{ $result->nama_karyawan }} ({{ $result->payroll_id }})</span>
+                                                <li>
+                                                    <button type="button" wire:click="selectDriver({{ $result->id }})" class="w-full text-left cursor-pointer select-none relative py-2 pl-3 pr-9 text-gray-900 dark:text-white hover:bg-qhse-secondary hover:dark:bg-qhse-secondary-dark">
+                                                        <span class="font-normal block truncate">{{ $result->karyawan->nama_karyawan }} ({{ $result->karyawan->payroll_id }})</span>
+                                                    </button>
                                                 </li>
                                             @endforeach
                                         </ul>

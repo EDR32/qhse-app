@@ -9,18 +9,6 @@
 <div class="py-10">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-        {{-- Tombol Utama
-                <button @click="open = !open"
-                    class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md 
-                    font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 
-                    active:bg-blue-700 focus:outline-none transition">
-                    Buat Laporan Baru
-                    <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button> --}}
-                
         {{-- SELECT LAPORAN BARU --}}
         <div x-data="{
                 showSelect: true,
@@ -92,7 +80,12 @@
             {{-- TABEL UNIT (KIRI) --}}
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="text-lg font-semibold mb-4">Data Unit</h2>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold">Data Unit</h2>
+                    </div>
+                    <div class="mb-4">
+                        <x-text-input wire:model.live.debounce.300ms="unitSearch" class="block w-full" type="search" placeholder="Cari No Unit..." />
+                    </div>
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -134,29 +127,50 @@
             {{-- TABEL DRIVER (KANAN) --}}
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h2 class="text-lg font-semibold mb-4">Data Driver</h2>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold">Data Driver</h2>
+                    </div>
+                    <div class="mb-4">
+                        <x-text-input wire:model.live.debounce.300ms="driverSearch" class="block w-full" type="search" placeholder="Cari Driver/Kategori..." />
+                    </div>
 
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead class="bg-gray-50 dark:bg-gray-700">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium">No</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium">Payroll ID</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium">Nama Driver</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{-- Data Driver masuk dari Livewire --}}
-                            <tr>
-                                <td class="border border-gray-200 dark:border-gray-700 px-6 py-3 text-left text-xs font-medium">1</td>
-                                <td class="border border-gray-200 dark:border-gray-700 px-6 py-3 text-left text-xs font-medium">2</td>
-                                <td class="border border-gray-200 dark:border-gray-700 px-6 py-3 text-left text-xs font-medium">3</td>
-                                <td class="border border-gray-200 dark:border-gray-700 px-6 py-3 text-left text-xs font-medium">
-                                    <a href="{{ url('violations/driver') }}" class="text-blue-600 hover:underline">Lihat</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-700">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium">No</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium">Payroll ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium">Nama Driver</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium">Kategori</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                @forelse($drivers as $index => $driver)
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $drivers->firstItem() + $index }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $driver->karyawan->payroll_id ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $driver->karyawan->nama_karyawan ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $driver->driver_category }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            {{-- Assuming a route violations.show.driver exists that accepts a Driver model --}}
+                                            <a href="{{ route('violations.show.driver', $driver) }}" class="text-blue-600 hover:underline">Lihat</a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                            Tidak ada data driver.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-4">
+                        {{ $drivers->links() }}
+                    </div>
                 </div>
             </div>
 

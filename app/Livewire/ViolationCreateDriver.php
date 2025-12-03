@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Master\Driver;
 use App\Models\Master\Karyawan;
 use App\Models\User;
 use App\Models\Violation;
@@ -48,14 +49,14 @@ class ViolationCreateDriver extends Component
     protected function rules()
     {
         return [
-            'driver_type' => 'required|in:dumptruck,trailer,project', // Validate driver_type from URL
-            'karyawan_id' => 'required', // We need to ensure a Karyawan is selected
+            'driver_type' => 'required|in:dumptruck,trailer,project',
+            'karyawan_id' => 'required',
             'user_id' => 'required',
             'violation_date' => 'required|date',
-            'violation_category' => 'required|string',
             'description' => 'required|string|min:10',
             'sanction' => 'nullable|string',
             'location' => 'required|string',
+            'violation_category' => 'required|string',
         ];
     }
 
@@ -81,24 +82,24 @@ class ViolationCreateDriver extends Component
             return;
         }
 
-        $title = ($this->driver_type === 'project') ? 'DRIVER PROJECT' : 'DRIVER';
+        $driverCategory = strtoupper($this->driver_type);
 
-        $this->searchResults = Karyawan::where('title', $title)
-            ->where(function ($query) {
+        $this->searchResults = Driver::with('karyawan')
+            ->where('driver_category', $driverCategory)
+            ->whereHas('karyawan', function ($query) {
                 $query->where('nama_karyawan', 'ilike', '%' . $this->driver_search . '%')
-                    ->orWhere('payroll_id', 'ilike', '%' . $this->driver_search . '%');
+                      ->orWhere('payroll_id', 'ilike', '%' . $this->driver_search . '%');
             })
-            ->where('aktif', true)
             ->take(5)
             ->get();
     }
 
-    public function selectKaryawan($karyawanId)
+    public function selectDriver($driverId)
     {
-        $karyawan = Karyawan::find($karyawanId);
-        if ($karyawan) {
-            // Cari user yang berelasi dengan karyawan
-            $user = User::where('karyawan_id', $karyawan->id)->first();
+        $driver = Driver::with('karyawan')->find($driverId);
+        if ($driver && $driver->karyawan) {
+            // Find the related user via the Eloquent relationship on the Karyawan model
+            $user = $driver->karyawan->user;
 
             if (!$user) {
                 // Handle jika user tidak ditemukan, mungkin dengan notifikasi error
@@ -108,9 +109,9 @@ class ViolationCreateDriver extends Component
                 return;
             }
 
-            $this->karyawan_id = $karyawan->id;
+            $this->karyawan_id = $driver->karyawan->id;
             $this->user_id = $user->id; // simpan user_id yang berelasi
-            $this->selectedKaryawanName = $karyawan->nama_karyawan . ' (' . $karyawan->payroll_id . ')';
+            $this->selectedKaryawanName = $driver->karyawan->nama_karyawan . ' (' . $driver->karyawan->payroll_id . ')';
             $this->searchResults = [];
             $this->driver_search = '';
         }
@@ -145,7 +146,7 @@ class ViolationCreateDriver extends Component
 
         session()->flash('success', 'Data pelanggaran berhasil disimpan.');
 
-        return $this->redirectRoute('violations.index', navigate: true);
+        return $this->redirectRoute('violations.index');
     }
 
     #[Layout('layouts.app')]
