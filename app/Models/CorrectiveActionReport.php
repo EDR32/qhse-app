@@ -61,45 +61,24 @@ class CorrectiveActionReport extends Model
     /**
      * Get the user who issued the report.
      */
-    public function getIssuerAttribute()
+    public function issuer(): BelongsTo
     {
-        if (!$this->issued_by) {
-            return null;
-        }
-        // Simple caching to avoid repeated queries
-        if (!array_key_exists('issuer_data', $this->attributes)) {
-            $this->attributes['issuer_data'] = app(UserService::class)->findById($this->issued_by);
-        }
-        return $this->attributes['issuer_data'];
+        return $this->belongsTo(User::class, 'issued_by');
     }
 
     /**
      * Get the user who approved as MR.
      */
-    public function getMrApproverAttribute()
+    public function mrApprover(): BelongsTo
     {
-        if (!$this->mr_approved_by) {
-            return null;
-        }
-        // Simple caching
-        if (!array_key_exists('mr_approver_data', $this->attributes)) {
-            $this->attributes['mr_approver_data'] = app(UserService::class)->findById($this->mr_approved_by);
-        }
-        return $this->attributes['mr_approver_data'];
+        return $this->belongsTo(User::class, 'mr_approved_by');
     }
 
     /**
      * Get the user who approved as Director.
      */
-    public function getDirectorApproverAttribute()
+    public function directorApprover(): BelongsTo
     {
-        if (!$this->director_approved_by) {
-            return null;
-        }
-        // Simple caching
-        if (!array_key_exists('director_approver_data', $this->attributes)) {
-            $this->attributes['director_approver_data'] = app(UserService::class)->findById($this->director_approved_by);
-        }
-        return $this->attributes['director_approver_data'];
+        return $this->belongsTo(User::class, 'director_approved_by');
     }
 }
