@@ -44,7 +44,7 @@ class RcaCreate extends Component
     {
         $this->validate();
 
-        RootCauseAnalysis::create([
+        $rca = RootCauseAnalysis::create([
             'accident_id' => $this->accident->id,
             'analysis_method' => $this->analysis_method,
             'root_cause_summary' => $this->root_cause_summary,
@@ -58,7 +58,7 @@ class RcaCreate extends Component
 
         session()->flash('message', 'Root Cause Analysis berhasil dibuat.');
 
-        return redirect()->route('accidents.show', $this->accident);
+        return redirect()->route('rca.show', $rca);
     }
 
     public function render()
