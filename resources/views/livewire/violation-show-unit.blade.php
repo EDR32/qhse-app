@@ -90,6 +90,7 @@
                         <tr>
                             <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Tanggal</th>
                             <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Waktu</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Driver</th>
                             <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Lokasi</th>
                             <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Deskripsi</th>
                         </tr>
@@ -99,6 +100,7 @@
                             <tr>
                                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{{ \Carbon\Carbon::parse($event->event_date)->format('d M Y') }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">{{ \Carbon\Carbon::parse($event->event_time)->format('H:i') }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">Nama Driver</td>
                                 <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">{{ $event->location }}</td>
                                 <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">{{ $event->description }}</td>
                             </tr>
