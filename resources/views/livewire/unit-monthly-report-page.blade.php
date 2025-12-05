@@ -96,6 +96,11 @@
                         <div class="mt-6 p-4 border-t border-gray-200 dark:border-gray-700">
                              <h4 class="text-md font-medium text-gray-900 dark:text-gray-100">{{ __('Tambah Temuan Storing Baru') }}</h4>
                              <form wire:submit.prevent="addStoringEvent" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="col-span-1 md:col-span-2">
+                                    <x-input-label for="newStoring.driver" :value="__('Nama / Payroll ID Driver')" />
+                                    <x-text-input id="newStoring.driver" type="text" class="mt-1 block w-full" wire:model="newStoring.driver" placeholder="Masukkan nama atau Payroll ID Driver (Min. 2 Huruf)" />
+                                    <x-input-error :messages="$errors->get('newStoring.driver')" class="mt-2" />
+                                </div>
                                 <div>
                                     <x-input-label for="newStoring.event_date" :value="__('Tanggal Kejadian')" />
                                     <x-text-input id="newStoring.event_date" type="date" class="mt-1 block w-full" wire:model="newStoring.event_date" />
